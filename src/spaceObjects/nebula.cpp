@@ -27,7 +27,13 @@ Nebula::Nebula()
     {
         clouds[n].size = random(1024, 1024 * 4);
         clouds[n].texture = irandom(1, 3);
-        clouds[n].offset = sf::vector2FromAngle(float(n * 360 / cloud_count)) * random(clouds[n].size / 2.0f, getRadius() - clouds[n].size);
+        // clip cluster inside of max radius of nebula
+        float ang = (float)(n*360.0 / cloud_count);
+        float mn = clouds[n].size / 2.0f;
+        float mx = getRadius() - clouds[n].size;
+        float mag = mn < mx ? random(mn, mx) : mx;
+        LOG(DEBUG) << "Nebula: Cloud " << n << " angle: " << ang << " mag " << mag;
+        clouds[n].offset = sf::vector2FromAngle(ang) * mag;
     }
     
     nebula_list.push_back(this);
